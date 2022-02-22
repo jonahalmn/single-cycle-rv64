@@ -1,8 +1,9 @@
 nop
 nop
 nop
-addi a0, zero, 230
-add a5, a1, t0
+addi a1, zero, 4
+addi a5, zero, 2
+add a0, a1, a5
 nop
 nop
 nop

@@ -6,9 +6,9 @@ module alu #(parameter ARCH_WIDTH=64, parameter ALU_OP_WIDTH=4) (
 );
 
 always @(aluOp, rs1, rs2) begin
-    case (aluOp)
-        'b1: out = rs1 + rs2;
-        default: $display("default");
+    if(aluOp) case (aluOp)
+        1'b1: out = rs1 + rs2;
+        default: $display("alu null");
     endcase 
 end
 

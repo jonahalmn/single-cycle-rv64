@@ -13,8 +13,9 @@ module gpr #(parameter ARCH_WIDTH = 64) (
 //register registers[31:0];
 
 wire [31:0][ARCH_WIDTH-1:0] regsData;
-reg [31:0] regsReadOnly;
-reg [31:0] regsRriteEnable;
+//wire [ARCH_WIDTH-1:0] wData;
+reg [31:0] regsReadOnly = 32'h0000;
+reg [31:0] regsWriteEnable = 32'h0000;
 
 mux #(.ARCH_WIDTH(64), .INPUT_QUANTITY(32), .SEL_WIDTH(5)) mux_0(
     .in(regsData),
@@ -29,7 +30,7 @@ mux #(.ARCH_WIDTH(64), .INPUT_QUANTITY(32), .SEL_WIDTH(5)) mux_1(
 );
 
 
-initial begin 
+initial begin
     regsReadOnly[0] = 'b1;
 end
 
@@ -37,9 +38,16 @@ end
 genvar i; 
 generate
     for (i = 0; i < 32; i = i + 1) begin
-        register #(.START_VAL(i)) regi(.clk(clk), .writeEnable(1'b0), .writeData(64'b0), .readOnly(1'b0), .readData(regsData[i]));
+        register #(.START_VAL(i)) regi(.clk(clk), .writeEnable(regsWriteEnable[i]), .writeData(wData), .readOnly(regsReadOnly[i]), .readData(regsData[i]));
     end
 endgenerate
+
+always @(wData, wEn) begin
+    regsWriteEnable = 32'h0000;
+    if(wEn) begin
+        regsWriteEnable[rd] = 'b1;
+    end
+end
 
 // reg     [31:0]  registers [31:0];
 // generate
