@@ -3,7 +3,8 @@ module controller(
     input wire[31:0] instruction,
     output reg[3:0] aluOp,
     output reg regWrite,
-    output reg immediate
+    output reg immediate,
+    output reg jump
 );
 
 reg[2:0] func3;
@@ -14,6 +15,12 @@ always @(instruction) begin
 
     func3 = instruction[14:12];
     func7 = instruction[31:25];
+
+    // reset all controls
+    aluOp = 'b0;
+    immediate = 'b0;
+    regWrite = 'b0;
+    jump = 'b0;
 
     case (instruction[6:0])
         'b0010011: begin
@@ -33,6 +40,11 @@ always @(instruction) begin
                 immediate = 'b0;
                 regWrite = 'b1;
             end
+        end
+        'b1101111: begin
+            // JAL
+            $display("JAL");
+            jump = 'b1;
         end
         default: begin
             aluOp = 'b0;

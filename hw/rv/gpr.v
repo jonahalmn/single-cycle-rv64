@@ -38,7 +38,7 @@ end
 genvar i; 
 generate
     for (i = 0; i < 32; i = i + 1) begin
-        register #(.START_VAL(i)) regi(.clk(clk), .writeEnable(regsWriteEnable[i]), .writeData(wData), .readOnly(regsReadOnly[i]), .readData(regsData[i]));
+        register #(.START_VAL(64'b0)) regi(.clk(clk), .writeEnable(regsWriteEnable[i]), .writeData(wData), .readOnly(regsReadOnly[i]), .readData(regsData[i]));
     end
 endgenerate
 
@@ -70,39 +70,8 @@ end
   //  if(~immediate) out2 = registers[rs2].readData;
 //end
 
+debug_gpr readable_registers(.regsData(regsData));
 
 
-// reg[WIDTH - 1:0] zero = 'b0;
-// reg[WIDTH - 1:0] ra = 'b0;
-// reg[WIDTH - 1:0] sp = 'b0;
-// reg[WIDTH - 1:0] gp = 'b0;
-// reg[WIDTH - 1:0] tp = 'b0;
-// reg[WIDTH - 1:0] t0 = 'b0;
-// reg[WIDTH - 1:0] t1 = 'b0;
-// reg[WIDTH - 1:0] t2 = 'b0;
-// reg[WIDTH - 1:0] s0 = 'b0;
-// reg[WIDTH - 1:0] s1 = 'b0;
-// reg[WIDTH - 1:0] a0 = 'b0;
-// reg[WIDTH - 1:0] a1 = 'b0;
-// reg[WIDTH - 1:0] a2 = 'b0;
-// reg[WIDTH - 1:0] a3 = 'b0;
-// reg[WIDTH - 1:0] a4 = 'b0;
-// reg[WIDTH - 1:0] a5 = 'b0;
-// reg[WIDTH - 1:0] a6 = 'b0;
-// reg[WIDTH - 1:0] a7 = 'b0;
-// reg[WIDTH - 1:0] s2 = 'b0;
-// reg[WIDTH - 1:0] s3 = 'b0;
-// reg[WIDTH - 1:0] s4 = 'b0;
-// reg[WIDTH - 1:0] s5 = 'b0;
-// reg[WIDTH - 1:0] s6 = 'b0;
-// reg[WIDTH - 1:0] s7 = 'b0;
-// reg[WIDTH - 1:0] s8 = 'b0;
-// reg[WIDTH - 1:0] s9 = 'b0;
-// reg[WIDTH - 1:0] s10 = 'b0;
-// reg[WIDTH - 1:0] s11 = 'b0;
-// reg[WIDTH - 1:0] t3 = 'b0;
-// reg[WIDTH - 1:0] t4 = 'b0;
-// reg[WIDTH - 1:0] t5 = 'b0;
-// reg[WIDTH - 1:0] t6 = 'b0;
 
 endmodule

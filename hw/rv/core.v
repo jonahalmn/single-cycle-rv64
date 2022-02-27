@@ -1,6 +1,8 @@
 module core(
     input wire clk,
     output wire[63:0] pc,
+    output wire[63:0] memory_address,
+    input wire[63:0] memory_data,
     input wire[31:0] instruction
 );
     wire[4:0] rs1;
@@ -11,6 +13,7 @@ module core(
     wire immediate;
 
     wire[11:0] immOp; // immediate operand
+    wire[63:0] immOffset; // immediate offset for JAL
 
     wire[63:0] gprOut1;
     wire[63:0] gprOut2;
@@ -18,12 +21,15 @@ module core(
 
     wire[63:0] aluIn;
 
+    wire jumpCtrl;
+
     controller controller_0(
         .clk(clk),
         .instruction(instruction),
         .aluOp(aluOp),
         .regWrite(regWrite),
-        .immediate(immediate)
+        .immediate(immediate),
+        .jump(jumpCtrl)
     );
 
     decoder decoder_0(
@@ -31,7 +37,8 @@ module core(
         .rs1(rs1),
         .rs2(rs2),
         .rd(rd),
-        .immOp(immOp)
+        .immOp(immOp),
+        .immOffset(immOffset)
     );
 
     gpr gpregisters(
@@ -47,9 +54,9 @@ module core(
     );
 
     mux #(.ARCH_WIDTH(64), .INPUT_QUANTITY(2), .SEL_WIDTH(1)) mux_1(
-        .in({ {52'b0, immOp}, gprOut2}),
-        .sel(immediate),
-        .out(aluIn)
+        .in({ {{52{immOp[11]}}, immOp}, gprOut2}),
+        .out(aluIn),
+        .sel(immediate)
     );
 
     alu alu_0(
@@ -61,7 +68,9 @@ module core(
 
     pc pc_0(
         .clk(clk),
-        .pc(pc)
+        .pc(pc),
+        .offset(immOffset),
+        .jump(jumpCtrl)
     );
 
 endmodule

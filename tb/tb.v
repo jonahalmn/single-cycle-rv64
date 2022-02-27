@@ -26,7 +26,7 @@ module tb ();
     
     always @(posedge clk ) begin
         cycles++;
-        if(cycles > 8) $finish;
+        if(cycles > 50) $finish;
     end
 
     initial begin
