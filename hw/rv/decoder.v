@@ -12,12 +12,12 @@ module decoder(
     assign rd = instruction[11:7];
     assign immOp = instruction[31:20];
     // Sign bit extend
-    assign immOffset = {{42{instruction[31]}},
+    assign immOffset = {{43{instruction[31]}},
                     instruction[31], 
                     instruction[19:12],
                     instruction[20],
                     instruction[30:21],
-                    2'b0
+                    1'b0
                 };
 
 
