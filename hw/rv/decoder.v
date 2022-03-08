@@ -3,15 +3,15 @@ module decoder(
     output wire[4:0] rs1,
     output wire[4:0] rs2,
     output wire[4:0] rd,
-    output wire[11:0] immOp,
+    output wire[63:0] immOp,
     output wire[63:0] immOffset
 );
 
     assign rs1 = instruction[19:15];
     assign rs2 = instruction[24:20];
     assign rd = instruction[11:7];
-    assign immOp = instruction[31:20];
-    // Sign bit extend
+    assign immOp = {{52{instruction[31]}}, instruction[31:20]};
+    // Sign extend
     assign immOffset = {{43{instruction[31]}},
                     instruction[31], 
                     instruction[19:12],

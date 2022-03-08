@@ -12,16 +12,24 @@ module core(
     wire regWrite;
     wire immediate;
 
-    wire[11:0] immOp; // immediate operand
+    wire[63:0] nextPc;
+
+    wire[63:0] immOp; // immediate operand
     wire[63:0] immOffset; // immediate offset for JAL
+
+    wire[63:0] pcOffset;
 
     wire[63:0] gprOut1;
     wire[63:0] gprOut2;
     wire[63:0] aluOut;
 
     wire[63:0] aluIn;
+    wire[63:0] wDataReg;
+
+    wire[3:0] regSrc;
 
     wire jumpCtrl;
+    wire jalr;
 
     controller controller_0(
         .clk(clk),
@@ -29,7 +37,9 @@ module core(
         .aluOp(aluOp),
         .regWrite(regWrite),
         .immediate(immediate),
-        .jump(jumpCtrl)
+        .jump(jumpCtrl),
+        .jalr(jalr),
+        .regSrc(regSrc)
     );
 
     decoder decoder_0(
@@ -41,6 +51,12 @@ module core(
         .immOffset(immOffset)
     );
 
+    mux #(.ARCH_WIDTH(64), .INPUT_QUANTITY(4), .SEL_WIDTH(4)) mux_2(
+        .in({64'b0, nextPc, 64'b0, aluOut}),
+        .out(wDataReg),
+        .sel(regSrc)
+    );
+
     gpr gpregisters(
         .clk(clk),
         .rs1(rs1),
@@ -49,12 +65,12 @@ module core(
         .immediate(immediate),
         .out1(gprOut1),
         .out2(gprOut2),
-        .wData(aluOut),
+        .wData(wDataReg),
         .wEn(regWrite)
     );
 
     mux #(.ARCH_WIDTH(64), .INPUT_QUANTITY(2), .SEL_WIDTH(1)) mux_1(
-        .in({ {{52{immOp[11]}}, immOp}, gprOut2}),
+        .in({immOp, gprOut2}),
         .out(aluIn),
         .sel(immediate)
     );
@@ -66,11 +82,20 @@ module core(
         .out(aluOut)
     );
 
+    mux #(.ARCH_WIDTH(64), .INPUT_QUANTITY(2), .SEL_WIDTH(1)) mux_pc_imm_sel(
+        .in({immOp, immOffset}),
+        .out(pcOffset),
+        .sel(jalr)
+    );
+
     pc pc_0(
         .clk(clk),
         .pc(pc),
-        .offset(immOffset),
-        .jump(jumpCtrl)
+        .offset(pcOffset),
+        .jump(jumpCtrl),
+        .nextPc(nextPc),
+        .rs1(gprOut1),
+        .jalr(jalr)
     );
 
 endmodule

@@ -11,7 +11,7 @@ module program_memory(
     reg[31:0] line;
 
     initial begin
-        data_file = $fopen("sw/build/jmp.hex", "r");
+        data_file = $fopen("sw/build/jmpr.hex", "r");
         if (data_file == 0) begin
             $display("data_file handle was NULL");
             $finish;
